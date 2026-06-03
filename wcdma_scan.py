@@ -226,12 +226,16 @@ def main():
     # Generate the Unified Scan Report
     print("\n\033[95m[*] Birleşik tarama raporu oluşturuluyor...\033[0m")
     report_cmd = [sys.executable, "wcdma_scan_report.py"]
+    if uarfcns:
+        report_cmd.extend(["--uarfcns"] + [str(u) for u in uarfcns])
     run_cmd(report_cmd)
     
     # Ingest to Wiki if requested
     if not args.no_wiki:
         print("\n\033[95m[*] Obsidian Wiki entegrasyonu başlatılıyor...\033[0m")
         wiki_cmd = [sys.executable, "wcdma_wiki_helper.py"]
+        if uarfcns:
+            wiki_cmd.extend(["--uarfcns"] + [str(u) for u in uarfcns])
         run_cmd(wiki_cmd)
         
     print("\n\033[92m[+] Tüm tarama ve entegrasyon işlemleri başarıyla tamamlandı!\033[0m")

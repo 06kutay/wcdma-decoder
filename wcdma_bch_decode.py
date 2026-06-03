@@ -323,23 +323,39 @@ def main():
         decoded_blocks = {}
         success_count = 0
         
-        for f in range(num_frames - 1):
+        found_config = None
+        test_limit = min(10, num_frames - 1)
+        print(f"Searching for a valid receiver configuration on the first {test_limit} frames...")
+        for f in range(test_limit):
             f0_raw = frame_pccpch_raw[f]
             f1_raw = frame_pccpch_raw[f+1]
             H0 = frame_H_all[f]
             H1 = frame_H_all[f+1]
-            
             success, data_bits, config = run_decode_grid_search(f0_raw, f1_raw, H0, H1)
             if success:
-                hex_str = bits_to_hex(data_bits)
-                print(f"[+] SUCCESS! Frame pair ({f}, {f+1}) decoded with config: {config}")
-                print(f"    Hex: {hex_str}")
-                success_count += 1
-                decoded_blocks[f] = {
-                    "hex": hex_str,
-                    "config": config
-                }
+                found_config = config
+                print(f"[+] Found working configuration at frame pair ({f}, {f+1}): {config}")
+                break
                 
+        if found_config:
+            print(f"Decoding all {num_frames - 1} frames using the found configuration...")
+            for f in range(num_frames - 1):
+                f0_raw = frame_pccpch_raw[f]
+                f1_raw = frame_pccpch_raw[f+1]
+                H0 = frame_H_all[f]
+                H1 = frame_H_all[f+1]
+                success, data_bits = decode_single_config(f0_raw, f1_raw, H0, H1, found_config)
+                if success:
+                    hex_str = bits_to_hex(data_bits)
+                    print(f"[+] Decoded block at frame pair ({f}, {f+1}) SFN-like counter: {hex_str[2:4]} (Hex: {hex_str[:16]}...)")
+                    success_count += 1
+                    decoded_blocks[f] = {
+                        "hex": hex_str,
+                        "config": found_config
+                    }
+        else:
+            print("[-] Grid search failed. No valid receiver configuration could be found (signal might be too weak).")
+            
     if success_count > 0:
         print(f"\n[+] Decoded {success_count} BCH transport blocks successfully!")
         out_json_path = args.output if args.output is not None else args.input + ".bch.json"

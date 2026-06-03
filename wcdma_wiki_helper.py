@@ -343,9 +343,29 @@ def update_neighbor_map_md(cells_data):
     print(f"Komşu haritası başarıyla güncellendi: {map_path}")
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="WCDMA Wiki Entegrasyon Yardımcısı")
+    parser.add_argument("--uarfcns", type=int, nargs="+", help="Sadece bu UARFCN'lerin sonuçlarını wikiye işle")
+    args = parser.parse_args()
+
     results_files = glob.glob("captures/*.results.json")
+    
+    # Filter by uarfcns if specified
+    if args.uarfcns:
+        filtered_files = []
+        for rf in results_files:
+            try:
+                with open(rf, "r") as f:
+                    data = json.load(f)
+                uarfcn = data.get("uarfcn")
+                if uarfcn in args.uarfcns:
+                    filtered_files.append(rf)
+            except Exception:
+                pass
+        results_files = filtered_files
+
     if not results_files:
-        print("Hata: captures/ dizininde .results.json dosyası bulunamadı!")
+        print("Hata: Raporlanacak aktif .results.json dosyası bulunamadı!")
         return
 
     print("ASN.1 derleniyor...")

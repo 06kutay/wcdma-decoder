@@ -188,6 +188,11 @@ def decode_sib_data(bch_json_path, db):
     return info
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Birleşik Tarama Raporu Oluşturucu")
+    parser.add_argument("--uarfcns", type=int, nargs="+", help="Sadece bu UARFCN'lerin sonuçlarını raporla")
+    args = parser.parse_args()
+
     print("[*] Birleşik Tarama Raporu Oluşturucu")
     
     # Compile ASN.1
@@ -205,8 +210,23 @@ def main():
         sys.exit(1)
         
     results_files = glob.glob("captures/*.results.json")
+    
+    # Filter by uarfcns if specified
+    if args.uarfcns:
+        filtered_files = []
+        for rf in results_files:
+            try:
+                with open(rf, "r") as f:
+                    data = json.load(f)
+                uarfcn = data.get("uarfcn")
+                if uarfcn in args.uarfcns:
+                    filtered_files.append(rf)
+            except Exception:
+                pass
+        results_files = filtered_files
+
     if not results_files:
-        print("[-] captures/ dizininde results.json dosyası bulunamadı!")
+        print("[-] Raporlanacak aktif results.json dosyası bulunamadı!")
         sys.exit(1)
         
     scanned_cells = []
