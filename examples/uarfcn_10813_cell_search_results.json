@@ -1,0 +1,15 @@
+{
+  "uarfcn": 10813,
+  "frequency_mhz": 2160.2,
+  "cells": [
+    {
+      "scrambling_code": 483,
+      "code_group": 60,
+      "slot_timing_sample": 1098,
+      "frame_timing_sample": 21598,
+      "cpich_rscp_dbm": -35.35,
+      "cpich_ecno_db": -4.14,
+      "frequency_correction_hz": 2402000.0
+    }
+  ]
+}

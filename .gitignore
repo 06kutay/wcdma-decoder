@@ -1,0 +1,39 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Captured IQ data and results
+*.cfile
+captures/
+examples/*.cfile
+
+# Plot outputs / images
+*.png
+
+# Obsidian Wiki workspaces and configs
+wcdma-wiki/.obsidian/workspace*
+wcdma-wiki/.obsidian/workspace.json
+
+# Model Internal / Agent Workspace Metadata
+.gemini/
+implementation_plan*.md
+walkthrough.md
+scratch/
+.tempmediaStorage/
+CLAUDE.md
+
+# Scratch and helper scripts
+scratch_*.py
+download_and_extract.py
+parse_table.py
+print_table.py
+scratch_sib11_full.txt
+obsidian-wiki/
+
