@@ -74,6 +74,17 @@ for ns in range(256):
     PREV_STATES[ns, 0] = (ns & 0x7F) << 1
     PREV_STATES[ns, 1] = ((ns & 0x7F) << 1) | 1
 
+# Convert to standard Python lists for faster execution
+PREV_STATES_LIST = PREV_STATES.tolist()
+# EXP_OUTPUTS[s][u] stores BPSK mapped expected outputs: (1.0 - 2.0 * v0, 1.0 - 2.0 * v1)
+EXP_OUTPUTS = []
+for s in range(256):
+    s_exps = []
+    for u in [0, 1]:
+        v0, v1 = OUTPUTS[s, u]
+        s_exps.append((float(1.0 - 2.0 * v0), float(1.0 - 2.0 * v1)))
+    EXP_OUTPUTS.append(s_exps)
+
 def decode_viterbi(soft_bits):
     """
     256-state Viterbi decoder for WCDMA Rate 1/2 Convolutional Code (K=9).
@@ -87,42 +98,38 @@ def decode_viterbi(soft_bits):
     n_symbols = len(soft_bits) // 2
     
     # Path metrics initialized to infinity except state 0
-    path_metrics = np.full(256, np.inf)
+    path_metrics = [float('inf')] * 256
     path_metrics[0] = 0.0
     
-    tb_paths = np.zeros((n_symbols, 256), dtype=np.int16)
+    tb_paths = [[0] * 256 for _ in range(n_symbols)]
+    sb_list = list(soft_bits)
+    
+    # Pull global list references to local variables to speed up access
+    prev_states = PREV_STATES_LIST
+    exp_outputs = EXP_OUTPUTS
     
     for k in range(n_symbols):
-        r0 = soft_bits[2*k]
-        r1 = soft_bits[2*k+1]
-        
-        new_path_metrics = np.full(256, np.inf)
+        r0 = sb_list[2*k]
+        r1 = sb_list[2*k+1]
+        new_path_metrics = [float('inf')] * 256
         
         for ns in range(256):
             u = ns >> 7
-            ps0 = PREV_STATES[ns, 0]
-            ps1 = PREV_STATES[ns, 1]
+            ps0 = prev_states[ns][0]
+            ps1 = prev_states[ns][1]
             
-            # Outputs for transition from ps0 -> ns
-            v0_0, v0_1 = OUTPUTS[ps0, u]
-            # Outputs for transition from ps1 -> ns
-            v1_0, v1_1 = OUTPUTS[ps1, u]
-            
-            # Map expected binary [0, 1] to BPSK [+1, -1]
-            exp0_0 = 1.0 - 2.0 * v0_0
-            exp0_1 = 1.0 - 2.0 * v0_1
-            exp1_0 = 1.0 - 2.0 * v1_0
-            exp1_1 = 1.0 - 2.0 * v1_1
+            exp0_0, exp0_1 = exp_outputs[ps0][u]
+            exp1_0, exp1_1 = exp_outputs[ps1][u]
             
             m0 = path_metrics[ps0] + (r0 - exp0_0)**2 + (r1 - exp0_1)**2
             m1 = path_metrics[ps1] + (r0 - exp1_0)**2 + (r1 - exp1_1)**2
             
             if m0 < m1:
                 new_path_metrics[ns] = m0
-                tb_paths[k, ns] = ps0
+                tb_paths[k][ns] = ps0
             else:
                 new_path_metrics[ns] = m1
-                tb_paths[k, ns] = ps1
+                tb_paths[k][ns] = ps1
                 
         path_metrics = new_path_metrics
         
@@ -131,7 +138,7 @@ def decode_viterbi(soft_bits):
     decoded_bits = []
     
     for k in range(n_symbols - 1, -1, -1):
-        prev_state = tb_paths[k, best_state]
+        prev_state = tb_paths[k][best_state]
         u = best_state >> 7
         decoded_bits.append(u)
         best_state = prev_state

@@ -1,6 +1,6 @@
 ---
 title: Hot Cache
-updated: 2026-06-03 16:03
+updated: 2026-06-03 16:28
 ---
 
 # Hot Cache
@@ -31,6 +31,5 @@ updated: 2026-06-03 16:03
 
 | UARFCN | Frekans | PSC (Scrambling) | Kod Grubu | CPICH RSCP | CPICH Ec/No | Slot Timing | Kayıt Zamanı | SIB Dekodlama |
 |--------|---------|------------------|-----------|------------|-------------|-------------|--------------|---------------|
-| 10813 | 2160.2 MHz | [[Cell_WCDMA_UARFCN10813_SC483|483]] | 60 | -35.67 dBm | -4.89 dB | 149 | 2026-06-02T13:41:18Z | Tamamlandı (SIB3, 5, 11, 19) |
+| 10813 | 2160.2 MHz | [[Cell_WCDMA_UARFCN10813_SC483|483]] | 60 | -35.04 dBm | -4.30 dB | 3312 | 2026-06-03T13:20:51Z | Tamamlandı (SIB3, 5, 11, 19) |
 | 10813 | 2160.2 MHz | [[Cell_WCDMA_UARFCN10813_SC483|483]] | 60 | -35.35 dBm | -4.14 dB | 1098 | 2026-06-03T07:54:03Z | Tamamlandı (SIB3, 5, 11, 19) |
-| 2997 | 937.0 MHz | 5 | 0 | -71.16 dBm | -16.03 dB | 1020 | 2026-06-02T13:41:10Z | Yapılmadı |
