@@ -37,14 +37,15 @@ def uarfcn_to_freq(uarfcn):
     else:
         raise ValueError(f"Geçersiz UARFCN: {uarfcn}")
 
-def run_cmd(cmd):
+def run_cmd(cmd, check_exit_code=True):
     """
     Helper to run subprocess commands and print output.
     """
     print(f"\033[94m[CMD] Running: {' '.join(cmd)}\033[0m")
     res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0:
-        print(f"\033[91m[CMD ERROR] Command failed with code {res.returncode}\n{res.stderr}\033[0m")
+        if check_exit_code:
+            print(f"\033[91m[CMD ERROR] Command failed with code {res.returncode}\n{res.stderr}\033[0m")
         return False
     print(res.stdout)
     return True
@@ -135,7 +136,7 @@ def scan_cfile(cfile_path, uarfcn=None, no_wiki=False):
             "--output", out_bch_path
         ]
         
-        success = run_cmd(bch_cmd)
+        success = run_cmd(bch_cmd, check_exit_code=False)
         if success:
             decoded_any = True
             print(f"\033[92m[+] SC {sc} SIB verileri başarıyla çözümlendi -> {out_bch_path}\033[0m")
