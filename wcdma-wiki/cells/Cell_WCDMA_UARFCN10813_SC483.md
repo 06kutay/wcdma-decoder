@@ -44,23 +44,23 @@ Aşağıdaki hücreler SIB11 mesajı içerisinde komşu hücre olarak bildirilmi
 
 | Komşu ID | UARFCN | Frekans | Komşu Hücre PSC | Wiki Sayfası |
 |----------|--------|---------|-----------------|--------------|
-|        0 |  10838 | 2165.2 MHz |             480 | [[Cell_WCDMA_UARFCN10838_SC480\|Hücre UARFCN 10838 SC 480]] |
-|        1 |   2997 |  937.0 MHz |             100 | [[Cell_WCDMA_UARFCN2997_SC100\|Hücre UARFCN 2997 SC 100]] |
-|        2 |  10838 | 2165.2 MHz |              94 | [[Cell_WCDMA_UARFCN10838_SC94\|Hücre UARFCN 10838 SC 94]] |
-|        3 |  10838 | 2165.2 MHz |             234 | [[Cell_WCDMA_UARFCN10838_SC234\|Hücre UARFCN 10838 SC 234]] |
-|        4 |  10838 | 2165.2 MHz |             147 | [[Cell_WCDMA_UARFCN10838_SC147\|Hücre UARFCN 10838 SC 147]] |
-|        5 |  10838 | 2165.2 MHz |             151 | [[Cell_WCDMA_UARFCN10838_SC151\|Hücre UARFCN 10838 SC 151]] |
-|        6 |  10838 | 2165.2 MHz |              73 | [[Cell_WCDMA_UARFCN10838_SC73\|Hücre UARFCN 10838 SC 73]] |
-|        7 |   2997 |  937.0 MHz |             182 | [[Cell_WCDMA_UARFCN2997_SC182\|Hücre UARFCN 2997 SC 182]] |
-|        8 |  10838 | 2165.2 MHz |             453 | [[Cell_WCDMA_UARFCN10838_SC453\|Hücre UARFCN 10838 SC 453]] |
-|      N/A |  10838 | 2165.2 MHz |             212 | [[Cell_WCDMA_UARFCN10838_SC212\|Hücre UARFCN 10838 SC 212]] |
-|       12 |   2997 |  937.0 MHz |             259 | [[Cell_WCDMA_UARFCN2997_SC259\|Hücre UARFCN 2997 SC 259]] |
-|       13 |  10838 | 2165.2 MHz |             436 | [[Cell_WCDMA_UARFCN10838_SC436\|Hücre UARFCN 10838 SC 436]] |
-|       14 |  10838 | 2165.2 MHz |             363 | [[Cell_WCDMA_UARFCN10838_SC363\|Hücre UARFCN 10838 SC 363]] |
-|       15 |   2997 |  937.0 MHz |              59 | [[Cell_WCDMA_UARFCN2997_SC59\|Hücre UARFCN 2997 SC 59]] |
-|       16 |   2997 |  937.0 MHz |              83 | [[Cell_WCDMA_UARFCN2997_SC83\|Hücre UARFCN 2997 SC 83]] |
-|       16 |   2997 |  937.0 MHz |              77 | [[Cell_WCDMA_UARFCN2997_SC77\|Hücre UARFCN 2997 SC 77]] |
-|       20 |   2997 |  937.0 MHz |             266 | [[Cell_WCDMA_UARFCN2997_SC266\|Hücre UARFCN 2997 SC 266]] |
+|        0 |  10838 | 2165.2 MHz |             480 | UARFCN 10838 SC 480 |
+|        1 |   2997 |  937.0 MHz |             100 | UARFCN 2997 SC 100 |
+|        2 |  10838 | 2165.2 MHz |              94 | UARFCN 10838 SC 94 |
+|        3 |  10838 | 2165.2 MHz |             234 | UARFCN 10838 SC 234 |
+|        4 |  10838 | 2165.2 MHz |             147 | UARFCN 10838 SC 147 |
+|        5 |  10838 | 2165.2 MHz |             151 | UARFCN 10838 SC 151 |
+|        6 |  10838 | 2165.2 MHz |              73 | UARFCN 10838 SC 73 |
+|        7 |   2997 |  937.0 MHz |             182 | UARFCN 2997 SC 182 |
+|        8 |  10838 | 2165.2 MHz |             453 | UARFCN 10838 SC 453 |
+|      N/A |  10838 | 2165.2 MHz |             212 | UARFCN 10838 SC 212 |
+|       12 |   2997 |  937.0 MHz |             259 | UARFCN 2997 SC 259 |
+|       13 |  10838 | 2165.2 MHz |             436 | UARFCN 10838 SC 436 |
+|       14 |  10838 | 2165.2 MHz |             363 | UARFCN 10838 SC 363 |
+|       15 |   2997 |  937.0 MHz |              59 | UARFCN 2997 SC 59 |
+|       16 |   2997 |  937.0 MHz |              83 | UARFCN 2997 SC 83 |
+|       16 |   2997 |  937.0 MHz |              77 | UARFCN 2997 SC 77 |
+|       20 |   2997 |  937.0 MHz |             266 | UARFCN 2997 SC 266 |
 
 ### Komşu LTE Frekansları (SIB19 - Inter-RAT)
 Hücrenin SIB19 içerisinde yayınladığı E-UTRA komşu taşıyıcı frekansları:

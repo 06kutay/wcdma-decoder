@@ -56,9 +56,9 @@ Bu bilgi tabanı, SDR tabanlı **WCDMA/UMTS Komşu Hücre Analiz Sistemi** için
 
 * [[references/UARFCN Frekans Tablosu|UARFCN Frekans Tablosu]] — Turkcell, Vodafone, Türk Telekom Band 1/8 nominal UARFCN, DL/UL frekans kod tablosu ve Python hızlı arama sözlüğü.
 * [[references/3GPP WCDMA Standartlari|3GPP WCDMA Standartları]] — Projede temel alınan TS 25.213, TS 25.211, TS 25.212, TS 25.331 ve TS 25.101 standart haritası.
+* [[references/WCDMA Komşu Haritası|WCDMA Komşu Haritası]] — Hücreler arası komşuluk ilişkilerini ve yön durumlarını (tek/çift yönlü) gösteren topolojik matris.
 
 ### Aktif WCDMA Hücre Listesi (Phase 2 & 4)
-- [[Cell_WCDMA_UARFCN10838_SC59]] — UARFCN 10838 (SC: 59)
+
 - [[Cell_WCDMA_UARFCN10813_SC483]] — UARFCN 10813 (SC: 483) (Decoded SIBs, CID: 139474100)
 - [[Cell_WCDMA_UARFCN10813_SC483]] — UARFCN 10813 (SC: 483) (Decoded SIBs, CID: 139474100)
-- [[Cell_WCDMA_UARFCN2997_SC5]] — UARFCN 2997 (SC: 5)

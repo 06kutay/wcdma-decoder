@@ -112,6 +112,9 @@ If you want to run steps individually:
 ### License
 This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details.
 
+#### ASN.1 Specifications Licensing Exception
+The ASN.1 definition files in the `wcdma_rrc_asn1/` directory are derived from 3GPP Technical Specification TS 25.331 (V17.1.0 / V16.1.0). Copyright for these definitions belongs to the 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC). They are included solely for technical interoperability and protocol compliance, and are **NOT** covered by this project's GPLv3 license.
+
 ---
 
 ## Türkçe
@@ -221,3 +224,7 @@ Adımları tek tek kontrol etmek isterseniz:
 
 ### Lisans
 Bu proje GPLv3 lisansı altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına göz atabilirsiniz.
+
+#### ASN.1 Spesifikasyonları Lisans Muafiyeti
+`wcdma_rrc_asn1/` dizini altındaki ASN.1 tanım dosyaları 3GPP Teknik Spesifikasyonu TS 25.331'den (V17.1.0 / V16.1.0) türetilmiştir. Telif hakları 3GPP Organizasyon Ortaklarına (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC) aittir. Bu tanımlar yalnızca teknik birlikte çalışabilirlik sağlamak amacıyla projeye dahil edilmiş olup, projenin GPLv3 lisans **kapsamı dışındadır**.
+

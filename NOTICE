@@ -2,6 +2,10 @@ WCDMA/UMTS Passive Neighbor Cell Decoder
 Copyright (C) 2026 06kutay <https://github.com/06kutay>
 
 This product includes ASN.1 specifications for WCDMA/UMTS Radio Resource
-Control (RRC) derived from 3GPP TS 25.331.
-Copyright (C) 3GPP / ETSI.
-Used in accordance with 3GPP/ETSI policies for technical specification usage.
+Control (RRC) derived from 3GPP Technical Specification TS 25.331.
+Copyright (C) 3GPP / ETSI (Organizational Partners).
+
+These ASN.1 definitions (located in the `wcdma_rrc_asn1/` directory) are
+included solely to provide technical interoperability for decoding broadcast
+information. They are EXPLICITLY EXCLUDED from this project's GPLv3 license.
+Usage is subject to standard 3GPP/ETSI document reproduction guidelines.

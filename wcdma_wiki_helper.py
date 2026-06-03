@@ -154,45 +154,6 @@ def decode_bch_for_capture(bch_json_path, db):
             
     return info
 
-def create_skeletal_cell_page(uarfcn, psc):
-    cell_filename = f"Cell_WCDMA_UARFCN{uarfcn}_SC{psc}.md"
-    cell_path = os.path.join(WIKI_DIR, "cells", cell_filename)
-    if os.path.exists(cell_path):
-        return
-    
-    freq_mhz = 925.0 + 0.2 * (uarfcn - 2937) if uarfcn < 5000 else 2110.0 + 0.2 * (uarfcn - 10562)
-    
-    markdown_content = f"""---
-source: "wcdma_neighbor_report skeleton"
-created_date: {datetime.now().strftime('%Y-%m-%d')}
-tags:
-  - cells
-  - wcdma
-  - uarfcn_{uarfcn}
-  - neighbor_skeleton
----
-
-# WCDMA Neighbor Cell: UARFCN {uarfcn} - SC {psc}
-
-Bu sayfa, başka bir aktif hücrenin Sistem Bilgisi SIB11 komşu listesi deşifre edilerek tespit edilen bir komşu hücre iskelet kaydıdır. Henüz bu hücre üzerinde doğrudan bir IQ capture ve cell search işlemi gerçekleştirilmemiştir.
-
-## Hücre Bilgileri
-
-| Parametre | Değer | Açıklama |
-|-----------|-------|----------|
-| **UARFCN** | {uarfcn} | 3GPP Kanal Numarası |
-| **Frekans** | {freq_mhz:.1f} MHz | Merkez Taşıyıcı Frekansı |
-| **Primary Scrambling Code (PSC)** | [[Scrambling Code|{psc}]] | Hücre Tanımlama Kodu (0 - 511) |
-
-## İlişkili Hücreler
-* Bu komşu hücre ilk olarak [[Cell_WCDMA_UARFCN10813_SC483]] hücresinin SIB11 komşu listesinde tespit edilmiştir.
-
----
-*Bu sayfa wcdma_wiki_helper.py tarafından otomatik olarak üretilmiştir.*
-"""
-    with open(cell_path, "w") as f:
-        f.write(markdown_content)
-    print(f"Komşu iskelet hücre sayfası oluşturuldu: {cell_path}")
 
 def update_hot_md(cells_data):
     hot_path = os.path.join(WIKI_DIR, "hot.md")
@@ -212,14 +173,16 @@ def update_hot_md(cells_data):
     ]
     for cell in cells_data:
         sib_status = "Tamamlandı (SIB3, 5, 11, 19)" if cell.get('has_sib') else "Yapılmadı"
+        if cell.get('has_sib'):
+            psc_col = f"[[Cell_WCDMA_UARFCN{cell['uarfcn']}_SC{cell['scrambling_code']}|{cell['scrambling_code']}]]"
+        else:
+            psc_col = f"{cell['scrambling_code']}"
         summary_lines.append(
-            f"| {cell['uarfcn']} | {cell['frequency_mhz']} MHz | [[Cell_WCDMA_UARFCN{cell['uarfcn']}_SC{cell['scrambling_code']}|{cell['scrambling_code']}]] | {cell['code_group']} | {cell['cpich_rscp_dbm']:.2f} dBm | {cell['cpich_ecno_db']:.2f} dB | {cell['slot_timing_sample']} | {cell['timestamp']} | {sib_status} |"
+            f"| {cell['uarfcn']} | {cell['frequency_mhz']} MHz | {psc_col} | {cell['code_group']} | {cell['cpich_rscp_dbm']:.2f} dBm | {cell['cpich_ecno_db']:.2f} dB | {cell['slot_timing_sample']} | {cell['timestamp']} | {sib_status} |"
         )
     
     if "## Son Tespit Edilen Aktif Hücreler" in content:
         parts = content.split("## Son Tespit Edilen Aktif Hücreler")
-        # Find next header or end
-        # We replace the section and everything after it
         new_content = parts[0] + "\n".join(summary_lines) + "\n"
     elif "## Son Tespit Edilen Aktif Hücreler (Phase 2)" in content:
         parts = content.split("## Son Tespit Edilen Aktif Hücreler (Phase 2)")
@@ -280,10 +243,10 @@ def update_index_md(cells_data):
     with open(index_path, "r") as f:
         content = f.read()
 
-    cell_links = ["### Aktif WCDMA Hücre Listesi (Phase 2 & 4)"]
+    cell_links = ["### Aktif WCDMA Hücre Listesi (Phase 2 & 4)", ""]
     for cell in cells_data:
-        sib_str = f" (Decoded SIBs, CID: {cell['cell_identity']})" if cell.get('has_sib') else ""
-        cell_links.append(f"- [[Cell_WCDMA_UARFCN{cell['uarfcn']}_SC{cell['scrambling_code']}]] — UARFCN {cell['uarfcn']} (SC: {cell['scrambling_code']}){sib_str}")
+        if cell.get('has_sib'):
+            cell_links.append(f"- [[Cell_WCDMA_UARFCN{cell['uarfcn']}_SC{cell['scrambling_code']}]] — UARFCN {cell['uarfcn']} (SC: {cell['scrambling_code']}) (Decoded SIBs, CID: {cell['cell_identity']})")
 
     if "### Aktif WCDMA Hücre Listesi (Phase 2)" in content:
         parts = content.split("### Aktif WCDMA Hücre Listesi (Phase 2)")
@@ -313,6 +276,8 @@ def update_neighbor_map_md(cells_data):
             for n in cell["wcdma_neighbors"]:
                 if n["uarfcn"] is not None and n["psc"] is not None:
                     serv_to_neigh[k].add((int(n["uarfcn"]), int(n["psc"])))
+                    
+    decoded_cells = {(int(c["uarfcn"]), int(c["scrambling_code"])) for c in cells_data if c.get("has_sib")}
                     
     lines = [
         "---",
@@ -356,7 +321,10 @@ def update_neighbor_map_md(cells_data):
                 desc_str = "Her iki hücre de birbirini komşu olarak görüyor." if is_bidirectional else "Sadece kaynak hücre hedefi bildiriyor."
                 
                 src_link = f"[[Cell_WCDMA_UARFCN{src_u}_SC{src_sc}\\|UARFCN {src_u} SC {src_sc}]]"
-                dst_link = f"[[Cell_WCDMA_UARFCN{dst_u}_SC{dst_sc}\\|UARFCN {dst_u} SC {dst_sc}]]"
+                if dst_key in decoded_cells:
+                    dst_link = f"[[Cell_WCDMA_UARFCN{dst_u}_SC{dst_sc}\\|UARFCN {dst_u} SC {dst_sc}]]"
+                else:
+                    dst_link = f"UARFCN {dst_u} SC {dst_sc}"
                 
                 src_freq = 925.0 + 0.2 * (src_u - 2937) if src_u < 5000 else 2110.0 + 0.2 * (src_u - 10562)
                 dst_freq = 925.0 + 0.2 * (dst_u - 2937) if dst_u < 5000 else 2110.0 + 0.2 * (dst_u - 10562)
@@ -394,6 +362,7 @@ def main():
     
     cells_data = []
     
+    # 1. Collect all cells data
     for rf in results_files:
         with open(rf, "r") as f:
             data = json.load(f)
@@ -453,23 +422,47 @@ def main():
                 })
                 
             cells_data.append(cell_info)
+
+    # Compile the set of all decoded cells
+    decoded_cells = {(int(c["uarfcn"]), int(c["scrambling_code"])) for c in cells_data if c.get("has_sib")}
+    print(f"Decoded cell keys: {decoded_cells}")
+
+    # Track currently generated markdown files to clean up other stale ones
+    generated_md_files = set()
+
+    # 2. Generate cell markdown files ONLY for decoded cells
+    for cell_info in cells_data:
+        if not cell_info["has_sib"]:
+            continue
             
-            # Generate markdown content for cell
-            cell_filename = f"Cell_WCDMA_UARFCN{uarfcn}_SC{sc}.md"
-            cell_path = os.path.join(WIKI_DIR, "cells", cell_filename)
-            os.makedirs(os.path.dirname(cell_path), exist_ok=True)
-            
-            markdown_content = f"""---
+        uarfcn = cell_info["uarfcn"]
+        sc = cell_info["scrambling_code"]
+        freq_mhz = cell_info["frequency_mhz"]
+        grp = cell_info["code_group"]
+        rscp = cell_info["cpich_rscp_dbm"]
+        ecno = cell_info["cpich_ecno_db"]
+        slot_timing = cell_info["slot_timing_sample"]
+        frame_timing = cell_info["frame_timing_sample"]
+        freq_corr = cell_info["frequency_correction_hz"]
+        timestamp = cell_info["timestamp"]
+        
+        cell_filename = f"Cell_WCDMA_UARFCN{uarfcn}_SC{sc}.md"
+        cell_path = os.path.join(WIKI_DIR, "cells", cell_filename)
+        os.makedirs(os.path.dirname(cell_path), exist_ok=True)
+        generated_md_files.add(cell_filename)
+        
+        operator_str = "Turkcell" if cell_info['mnc'] == "01" else f"MNC {cell_info['mnc']}" if cell_info["has_sib"] else ""
+        
+        markdown_content = f"""---
 source: "wcdma_cellsearch analysis"
 created_date: {datetime.now().strftime('%Y-%m-%d')}
 tags:
   - cells
   - wcdma
   - uarfcn_{uarfcn}
-"""
-            if cell_info["has_sib"]:
-                markdown_content += f"  - decoded_sibs\n  - operator_turkcell\n"
-            markdown_content += f"""---
+  - decoded_sibs
+  - operator_turkcell
+---
 
 # WCDMA Cell: UARFCN {uarfcn} - SC {sc}
 
@@ -489,11 +482,7 @@ Bu sayfa, LimeSDR Mini üzerinden alınan ham IQ capture verisinin offline anali
 | **Frame Timing** | {frame_timing} | Çerçeve Başlangıç Örnek Endeksi (76800 sample içinde) |
 | **Frekans Düzeltme** | {freq_corr} Hz | SDR ppm kayması düzeltme değeri |
 | **Analiz Zamanı** | {timestamp} | Verinin capture edilme zaman damgası |
-"""
 
-            if cell_info["has_sib"]:
-                operator_str = "Turkcell" if cell_info['mnc'] == "01" else f"MNC {cell_info['mnc']}"
-                markdown_content += f"""
 ## RRC Sistem Bilgileri (BCH Decode - Faz 4)
 
 BCH transport kanalı başarıyla çözülmüş ve UPER ASN.1 şeması yardımıyla Sistem Bilgi Blokları (SIB) ayrıştırılmıştır.
@@ -511,40 +500,44 @@ Aşağıdaki hücreler SIB11 mesajı içerisinde komşu hücre olarak bildirilmi
 | Komşu ID | UARFCN | Frekans | Komşu Hücre PSC | Wiki Sayfası |
 |----------|--------|---------|-----------------|--------------|
 """
-                for ncell in cell_info['wcdma_neighbors']:
-                    n_id_str = str(ncell['cell_id']) if ncell['cell_id'] is not None else "N/A"
-                    n_uarfcn = ncell['uarfcn']
-                    n_psc = ncell['psc']
-                    n_freq = 925.0 + 0.2 * (n_uarfcn - 2937) if n_uarfcn < 5000 else 2110.0 + 0.2 * (n_uarfcn - 10562)
-                    markdown_content += f"| {n_id_str:>8s} | {n_uarfcn:6d} | {n_freq:6.1f} MHz | {n_psc:15d} | [[Cell_WCDMA_UARFCN{n_uarfcn}_SC{n_psc}\\|Hücre UARFCN {n_uarfcn} SC {n_psc}]] |\n"
-                    # Generate skeleton page
-                    create_skeletal_cell_page(n_uarfcn, n_psc)
+        for ncell in cell_info['wcdma_neighbors']:
+            n_id_str = str(ncell['cell_id']) if ncell['cell_id'] is not None else "N/A"
+            n_uarfcn = ncell['uarfcn']
+            n_psc = ncell['psc']
+            n_freq = 925.0 + 0.2 * (n_uarfcn - 2937) if n_uarfcn < 5000 else 2110.0 + 0.2 * (n_uarfcn - 10562)
+            
+            # Check if neighbor is decoded to determine wikilink vs plain text
+            if (int(n_uarfcn), int(n_psc)) in decoded_cells:
+                link_str = f"[[Cell_WCDMA_UARFCN{n_uarfcn}_SC{n_psc}\\|Hücre UARFCN {n_uarfcn} SC {n_psc}]]"
+            else:
+                link_str = f"UARFCN {n_uarfcn} SC {n_psc}"
+                
+            markdown_content += f"| {n_id_str:>8s} | {n_uarfcn:6d} | {n_freq:6.1f} MHz | {n_psc:15d} | {link_str} |\n"
 
-                markdown_content += f"""
+        markdown_content += f"""
 ### Komşu LTE Frekansları (SIB19 - Inter-RAT)
 Hücrenin SIB19 içerisinde yayınladığı E-UTRA komşu taşıyıcı frekansları:
 
 | EARFCN | LTE Bandı | Frekans | Bant Genişliği | Öncelik | Min Alış Seviyesi |
 |--------|-----------|---------|----------------|---------|-------------------|
 """
-                for lcell in cell_info['lte_neighbors']:
-                    markdown_content += f"| {lcell['earfcn']:6d} | {lcell['band']:10s} | {lcell['freq_mhz']:6.1f} MHz | {lcell['bw']:14s} | {lcell['priority']:7d} | {lcell['q_rx_lev_min']:4d} dBm |\n"
+        for lcell in cell_info['lte_neighbors']:
+            markdown_content += f"| {lcell['earfcn']:6d} | {lcell['band']:10s} | {lcell['freq_mhz']:6.1f} MHz | {lcell['bw']:14s} | {lcell['priority']:7d} | {lcell['q_rx_lev_min']:4d} dBm |\n"
 
-            # Add cross-validation note
-            cross_val_notes = []
-            if uarfcn == 10813 and sc == 483:
-                cross_val_notes.append("UARFCN 2997 bağımsız iki kaynakta (WCDMA SIB11 + harici GSM SI2quater) komşu olarak doğrulanmıştır.")
-            if cell_info["has_sib"]:
-                for lcell in cell_info['lte_neighbors']:
-                    if lcell['earfcn'] in [1300, 3050, 6300]:
-                        cross_val_notes.append(f"EARFCN {lcell['earfcn']} ({lcell['band']}) komşu frekansı GSM SI2quater taramalarında da Turkcell LTE komşusu olarak teyit edilmiştir.")
-            
-            if cross_val_notes:
-                markdown_content += "\n### Çapraz RAT ve Harici Doğrulama\n"
-                for note in cross_val_notes:
-                    markdown_content += f"> [!NOTE]\n> **Doğrulama:** {note}\n\n"
+        # Add cross-validation note
+        cross_val_notes = []
+        if uarfcn == 10813 and sc == 483:
+            cross_val_notes.append("UARFCN 2997 bağımsız iki kaynakta (WCDMA SIB11 + harici GSM SI2quater) komşu olarak doğrulanmıştır.")
+            for lcell in cell_info['lte_neighbors']:
+                if lcell['earfcn'] in [1300, 3050, 6300]:
+                    cross_val_notes.append(f"EARFCN {lcell['earfcn']} ({lcell['band']}) komşu frekansı GSM SI2quater taramalarında da Turkcell LTE komşusu olarak teyit edilmiştir.")
+        
+        if cross_val_notes:
+            markdown_content += "\n### Çapraz RAT ve Harici Doğrulama\n"
+            for note in cross_val_notes:
+                markdown_content += f"> [!NOTE]\n> **Doğrulama:** {note}\n\n"
 
-            markdown_content += f"""
+        markdown_content += f"""
 ## Mimari İlişkiler
 * **Erişim Metodu:** [[WCDMA Genel]] CDMA teknolojisi ile aynı frekansta kod bölmeli çoğullama.
 * **Senkronizasyon:** P-SCH ([[P-SCH]]) ile slot senkronizasyonu ve S-SCH ([[S-SCH]]) ile frame senkronizasyonu tamamlanmıştır.
@@ -554,9 +547,21 @@ Hücrenin SIB19 içerisinde yayınladığı E-UTRA komşu taşıyıcı frekansla
 ---
 *Bu sayfa wcdma_wiki_helper.py tarafından otomatik olarak üretilmiştir.*
 """
-            with open(cell_path, "w") as cf:
-                cf.write(markdown_content)
-            print(f"Hücre sayfası oluşturuldu: {cell_path}")
+        with open(cell_path, "w") as cf:
+            cf.write(markdown_content)
+        print(f"Hücre sayfası oluşturuldu: {cell_path}")
+
+    # Cleanup any stale/unneeded cell markdown files in the wiki directory
+    cells_dir = os.path.join(WIKI_DIR, "cells")
+    if os.path.exists(cells_dir):
+        for existing_file in os.listdir(cells_dir):
+            if existing_file.endswith(".md") and existing_file not in generated_md_files:
+                existing_path = os.path.join(cells_dir, existing_file)
+                try:
+                    os.remove(existing_path)
+                    print(f"Eski/İskelet hücre sayfası silindi: {existing_path}")
+                except Exception as e:
+                    print(f"Dosya silinirken hata oluştu {existing_path}: {e}")
 
     # Update global wiki docs
     update_index_md(cells_data)
@@ -567,3 +572,4 @@ Hücrenin SIB19 içerisinde yayınladığı E-UTRA komşu taşıyıcı frekansla
 
 if __name__ == "__main__":
     main()
+

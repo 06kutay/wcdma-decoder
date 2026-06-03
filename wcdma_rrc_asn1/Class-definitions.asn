@@ -1,4 +1,9 @@
--- 3GPP TS 25.331 V16.1.0 (2020-09)
+-- 3GPP TS 25.331 V16.1.0 (2020-09) RRC ASN.1 Specifications
+-- Copyright (C) 3GPP / ETSI (Organizational Partners)
+--
+-- These ASN.1 definitions are derived from 3GPP TS 25.331 V16.1.0.
+-- Copyright belongs to 3GPP/ETSI. They are included solely for technical
+-- interoperability and are NOT covered by this project's GPLv3 license.
 --
 -- 11.1	General message structure
 --
