@@ -349,23 +349,9 @@ def main():
     args = parser.parse_args()
 
     results_files = glob.glob("captures/*.results.json")
-    
-    # Filter by uarfcns if specified
-    if args.uarfcns:
-        filtered_files = []
-        for rf in results_files:
-            try:
-                with open(rf, "r") as f:
-                    data = json.load(f)
-                uarfcn = data.get("uarfcn")
-                if uarfcn in args.uarfcns:
-                    filtered_files.append(rf)
-            except Exception:
-                pass
-        results_files = filtered_files
 
     if not results_files:
-        print("Hata: Raporlanacak aktif .results.json dosyası bulunamadı!")
+        print("Hata: captures/ dizininde .results.json dosyası bulunamadı!")
         return
 
     print("ASN.1 derleniyor...")
@@ -453,6 +439,8 @@ def main():
     # 2. Generate cell markdown files ONLY for decoded cells
     for cell_info in cells_data:
         if not cell_info["has_sib"]:
+            continue
+        if args.uarfcns and cell_info["uarfcn"] not in args.uarfcns:
             continue
             
         uarfcn = cell_info["uarfcn"]
@@ -574,8 +562,16 @@ Hücrenin SIB19 içerisinde yayınladığı E-UTRA komşu taşıyıcı frekansla
     # Cleanup any stale/unneeded cell markdown files in the wiki directory
     cells_dir = os.path.join(WIKI_DIR, "cells")
     if os.path.exists(cells_dir):
+        import re
         for existing_file in os.listdir(cells_dir):
             if existing_file.endswith(".md") and existing_file not in generated_md_files:
+                # Only delete if it belongs to a UARFCN we are currently processing (if filtered)
+                m = re.match(r"Cell_WCDMA_UARFCN(\d+)_SC\d+\.md", existing_file)
+                if m:
+                    file_uarfcn = int(m.group(1))
+                    if args.uarfcns and file_uarfcn not in args.uarfcns:
+                        continue
+                
                 existing_path = os.path.join(cells_dir, existing_file)
                 try:
                     os.remove(existing_path)

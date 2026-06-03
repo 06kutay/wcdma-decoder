@@ -113,3 +113,58 @@ title: Wiki Log
   - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **0** WCDMA hücresi, **5** LTE frekansı.
   - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **17** WCDMA hücresi, **5** LTE frekansı.
 - **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 16:38:45 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **0** WCDMA hücresi, **5** LTE frekansı.
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **17** WCDMA hücresi, **5** LTE frekansı.
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:02:28 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **0** WCDMA hücresi, **5** LTE frekansı.
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **17** WCDMA hücresi, **5** LTE frekansı.
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:08:27 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **0** WCDMA hücresi, **5** LTE frekansı.
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **17** WCDMA hücresi, **5** LTE frekansı.
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:10:51 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:12:12 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:13:30 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:16:44 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **0** WCDMA hücresi, **5** LTE frekansı.
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **17** WCDMA hücresi, **5** LTE frekansı.
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:19:30 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-03 17:21:32 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **0** WCDMA hücresi, **5** LTE frekansı.
+  - **UARFCN 10813 (SC 483):** SIB reassembly ve ASN.1 UPER decode başarıyla tamamlandı. Hücre Kimliği: **139474100** (MCC 286, MNC 01). Tespit edilen komşu sayısı: **17** WCDMA hücresi, **5** LTE frekansı.
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
