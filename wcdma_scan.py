@@ -22,6 +22,7 @@ import json
 import subprocess
 import time
 import numpy as np
+import glob
 import wcdma_sync
 
 def uarfcn_to_freq(uarfcn):
@@ -158,6 +159,29 @@ def main():
     args = parser.parse_args()
     
     if args.input:
+        # Clean up old results and BCH files for this input UARFCN
+        import re
+        m = re.search(r"uarfcn_(\d+)", args.input)
+        if m:
+            u = int(m.group(1))
+            stale_files = glob.glob(f"captures/*{u}*")
+            for sf in stale_files:
+                if sf != args.input:
+                    try:
+                        os.remove(sf)
+                    except Exception:
+                        pass
+        else:
+            # Fallback to prefix matching if no UARFCN in name
+            prefix = args.input.replace(".cfile", "")
+            stale_files = glob.glob(prefix + ".cfile*") + glob.glob(prefix + "_*")
+            for sf in stale_files:
+                if sf != args.input:
+                    try:
+                        os.remove(sf)
+                    except Exception:
+                        pass
+                    
         # Scan a single existing cfile
         success = scan_cfile(args.input, no_wiki=args.no_wiki)
         if not success:
@@ -177,6 +201,14 @@ def main():
         
         captured_files = []
         for u in uarfcns:
+            # Clean up all old capture, results, metadata, bch, and reports containing this UARFCN
+            stale_files = glob.glob(f"captures/*{u}*")
+            for sf in stale_files:
+                try:
+                    os.remove(sf)
+                except Exception:
+                    pass
+
             try:
                 freq_mhz = uarfcn_to_freq(u)
             except ValueError as e:

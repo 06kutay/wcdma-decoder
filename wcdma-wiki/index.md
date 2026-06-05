@@ -60,5 +60,3 @@ Bu bilgi tabanı, SDR tabanlı **WCDMA/UMTS Komşu Hücre Analiz Sistemi** için
 
 ### Aktif WCDMA Hücre Listesi (Phase 2 & 4)
 
-- [[Cell_WCDMA_UARFCN10813_SC483]] — UARFCN 10813 (SC: 483) (Decoded SIBs, CID: 139474100)
-- [[Cell_WCDMA_UARFCN10813_SC483]] — UARFCN 10813 (SC: 483) (Decoded SIBs, CID: 139474100)
