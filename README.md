@@ -34,11 +34,8 @@ graph TD
     E --> F[Viterbi Decoder]
     F -->|CRC16 PASS| G[SI Reassembly]
     G --> H[ASN.1 UPER Parser]
-    H --> I[Neighbor Report & Wiki]
-```
-
-### Hardware Requirements
-* **Tested SDRs:** LimeSDR Mini v2.0, USRP B205.
+    H --> I[Neighbor Report & Wiki### Hardware Requirements
+* **Tested SDRs:** LimeSDR Mini v1.4/v2.0, USRP B205, USRP B210.
 * **Supported SDRs:** Any Software Defined Radio supported by the `SoapySDR` library.
 * **Frequency Range:** Must support the DL frequency bands of your target carrier (e.g. Band 1 ~2100 MHz, Band 8 ~900 MHz).
 
@@ -48,8 +45,9 @@ graph TD
 The python bindings for `SoapySDR` are usually best installed via your package manager.
 On Debian/Ubuntu:
 ```bash
-sudo apt-get install python3-soapysdr soapysdr-module-limesdr soapysdr-tools
+sudo apt-get install python3-soapysdr soapysdr-module-limesdr soapysdr-module-uhd soapysdr-tools
 ```
+*(Make sure to install `soapysdr-module-uhd` if you are using a USRP device, or `soapysdr-module-limesdr` for LimeSDR).*
 
 #### Python Environment Setup
 1. Clone the repository:
@@ -69,34 +67,64 @@ sudo apt-get install python3-soapysdr soapysdr-module-limesdr soapysdr-tools
 
 ### Usage
 
-#### 1. End-to-End Scan (Recommended)
-You can run a complete capture, cell search, BCH decode, and report generation in a single command using `wcdma_scan.py`:
-```bash
-# Scan a list of UARFCNs
-python3 wcdma_scan.py --uarfcn "10813 2997" --duration 3.0 --gain 40.0
+#### 🚀 Quick Start (Foolproof Mode)
 
-# Scan an existing IQ capture file instead of capturing live
-python3 wcdma_scan.py --input captures/uarfcn_10813_long.cfile
+If you just want to plug in your SDR and scan a channel, run the **End-to-End Orchestrator (`wcdma_scan.py`)**. It handles capturing, offset sync, decoding, SIB parsing, and reports automatically.
+
+##### 1. Using a LimeSDR Mini:
+```bash
+# Scan UARFCN 10813 with LimeSDR (antenna port LNAH/LNAW chosen automatically)
+python3 wcdma_scan.py --uarfcn 10813 --duration 5.0 --sdr limesdr
 ```
 
-#### 2. Manual Captured Analysis
-If you want to run steps individually:
-* **Capture IQ data:**
-  ```bash
-  python3 wcdma_capture.py --uarfcn 10813 --duration 3.0 --output captures/uarfcn_10813.cfile
-  ```
-* **Search for cells:**
-  ```bash
-  python3 wcdma_cellsearch.py --input captures/uarfcn_10813.cfile
-  ```
-* **Decode BCH transport block & SIBs:**
-  ```bash
-  python3 wcdma_bch_decode.py --input captures/uarfcn_10813.cfile --sc 483 --timing 20631 --cfo 2402000.0 --output captures/uarfcn_10813_sc483.bch.json
-  ```
-* **Generate Neighbor Report:**
-  ```bash
-  python3 wcdma_neighbor_report.py
-  ```
+##### 2. Using a USRP B210:
+```bash
+# Scan UARFCN 10813 with USRP using antenna port RX2
+python3 wcdma_scan.py --uarfcn 10813 --duration 5.0 --sdr usrp --antenna RX2
+```
+
+##### 3. Offline Analysis (Without SDR connected):
+If you already have a recorded `.cfile` IQ recording:
+```bash
+# Analyze an existing recording file
+python3 wcdma_scan.py --input captures/uarfcn_10813.cfile
+```
+
+---
+
+#### 🛠️ Manual Step-by-Step Analysis (Advanced Mode)
+
+If you want to run the pipeline steps individually:
+
+1. **Capture raw IQ data:**
+   ```bash
+   # Using USRP B210
+   python3 wcdma_capture.py --uarfcn 10813 --duration 5.0 --sdr usrp --antenna RX2 --output captures/uarfcn_10813.cfile
+   
+   # Using LimeSDR
+   python3 wcdma_capture.py --uarfcn 10813 --duration 5.0 --sdr limesdr --output captures/uarfcn_10813.cfile
+   ```
+
+2. **Run cell search to find timing and frequency offset:**
+   ```bash
+   python3 wcdma_cellsearch.py --input captures/uarfcn_10813.cfile
+   ```
+   *This will print the Primary Scrambling Code (PSC) found, the timing offset, and the precise corrected frequency offset (e.g. `2400922.0` Hz).*
+
+3. **Decode BCH and parse System Information Blocks (SIBs):**
+   Use the output from the cell search step:
+   ```bash
+   python3 wcdma_bch_decode.py --input captures/uarfcn_10813.cfile --sc 483 --timing 75173 --cfo 2400922.0 --output captures/uarfcn_10813_sc483.bch.json
+   ```
+
+4. **Generate Neighbor Reports and Wiki:**
+   ```bash
+   # Generate command-line summary tables
+   python3 wcdma_neighbor_report.py
+   
+   # Update Obsidian Wiki pages and neighbor maps
+   python3 wcdma_wiki_helper.py --uarfcns 10813
+   ```
 
 ### Validation Status
 * **Verified Carrier:** UARFCN 10813 (Turkcell Band 1) has been verified end-to-end. SIB19 LTE neighbor frequencies (EARFCN 6400, 1651) and SIB11 WCDMA neighbors (UARFCN 2997) have been cross-validated using independent GSM SI2quater scans.
@@ -151,7 +179,7 @@ graph TD
 ```
 
 ### Donanım Gereksinimleri
-* **Test Edilen SDR'lar:** LimeSDR Mini v2.0, USRP B205.
+* **Test Edilen SDR'lar:** LimeSDR Mini v1.4/v2.0, USRP B205, USRP B210.
 * **Desteklenen SDR'lar:** `SoapySDR` kütüphanesi tarafından desteklenen herhangi bir donanım.
 * **Frekans Aralığı:** Hedef operatörün DL frekans bandını desteklemelidir (örn. Band 1 ~2100 MHz, Band 8 ~900 MHz).
 
@@ -161,8 +189,9 @@ graph TD
 `SoapySDR` kütüphanesinin Python binding'lerinin sistem paket yöneticisi ile kurulması önerilir.
 Debian/Ubuntu için:
 ```bash
-sudo apt-get install python3-soapysdr soapysdr-module-limesdr soapysdr-tools
+sudo apt-get install python3-soapysdr soapysdr-module-limesdr soapysdr-module-uhd soapysdr-tools
 ```
+*(USRP kullanıyorsanız `soapysdr-module-uhd`, LimeSDR kullanıyorsanız `soapysdr-module-limesdr` paketinin kurulu olduğundan emin olun).*
 
 #### Python Sanal Ortam Kurulumu
 1. Repoyu klonlayın:
@@ -182,34 +211,64 @@ sudo apt-get install python3-soapysdr soapysdr-module-limesdr soapysdr-tools
 
 ### Kullanım
 
-#### 1. Uçtan Uca Tarama (Önerilen)
-Capture, hücre arama, BCH çözme ve wiki entegrasyonu adımlarını tek komutla çalıştırmak için `wcdma_scan.py` aracını kullanabilirsiniz:
-```bash
-# Belirli UARFCN listesini tara
-python3 wcdma_scan.py --uarfcn "10813 2997" --duration 3.0 --gain 40.0
+#### 🚀 Hızlı Başlangıç (Kolay Tarama Kılavuzu)
 
-# SDR olmadan, mevcut bir IQ dosyasını analiz et
-python3 wcdma_scan.py --input captures/uarfcn_10813_long.cfile
+SDR donanımınızı bilgisayara bağlayıp tek bir komutla tüm tarama, senkronizasyon, kod çözme ve raporlama süreçlerini otomatik olarak çalıştırmak için **Uçtan Uca Orkestratörü (`wcdma_scan.py`)** kullanın.
+
+##### 1. LimeSDR Mini ile Tarama:
+```bash
+# UARFCN 10813 kanalını LimeSDR ile tara (Anten portu LNAH/LNAW otomatik seçilir)
+python3 wcdma_scan.py --uarfcn 10813 --duration 5.0 --sdr limesdr
 ```
 
-#### 2. Adım Adım Manuel Analiz
-Adımları tek tek kontrol etmek isterseniz:
-* **IQ Sinyali Kaydetme:**
-  ```bash
-  python3 wcdma_capture.py --uarfcn 10813 --duration 3.0 --output captures/uarfcn_10813.cfile
-  ```
-* **Hücre Arama:**
-  ```bash
-  python3 wcdma_cellsearch.py --input captures/uarfcn_10813.cfile
-  ```
-* **BCH ve SIB Kod Çözme:**
-  ```bash
-  python3 wcdma_bch_decode.py --input captures/uarfcn_10813.cfile --sc 483 --timing 20631 --cfo 2402000.0 --output captures/uarfcn_10813_sc483.bch.json
-  ```
-* **Komşuluk Raporu Üretme:**
-  ```bash
-  python3 wcdma_neighbor_report.py
-  ```
+##### 2. USRP B210 ile Tarama:
+```bash
+# UARFCN 10813 kanalını USRP ile RX2 anten portu üzerinden tara
+python3 wcdma_scan.py --uarfcn 10813 --duration 5.0 --sdr usrp --antenna RX2
+```
+
+##### 3. Çevrimdışı Analiz (SDR Cihazı Olmadan):
+Eğer elinizde daha önceden kaydedilmiş bir `.cfile` IQ kaydı varsa:
+```bash
+# Mevcut bir kaydı analiz et
+python3 wcdma_scan.py --input captures/uarfcn_10813.cfile
+```
+
+---
+
+#### 🛠️ Adım Adım Manuel Analiz (Gelişmiş Mod)
+
+Tüm adımları tek tek manuel kontrol etmek isterseniz:
+
+1. **Ham IQ Sinyali Kaydetme:**
+   ```bash
+   # USRP B210 ile
+   python3 wcdma_capture.py --uarfcn 10813 --duration 5.0 --sdr usrp --antenna RX2 --output captures/uarfcn_10813.cfile
+   
+   # LimeSDR ile
+   python3 wcdma_capture.py --uarfcn 10813 --duration 5.0 --sdr limesdr --output captures/uarfcn_10813.cfile
+   ```
+
+2. **Hücre Arama (Timing ve Frekans Sapması Bulma):**
+   ```bash
+   python3 wcdma_cellsearch.py --input captures/uarfcn_10813.cfile
+   ```
+   *Bu komut, bulunan hücrenin Scrambling Code (PSC) değerini, zamanlama kaymasını (timing) ve hassas frekans kaymasını (örn. `2400922.0` Hz) ekrana basar.*
+
+3. **BCH ve SIB Kod Çözme:**
+   Hücre arama adımından elde ettiğiniz parametreleri girerek deşifre işlemini başlatın:
+   ```bash
+   python3 wcdma_bch_decode.py --input captures/uarfcn_10813.cfile --sc 483 --timing 75173 --cfo 2400922.0 --output captures/uarfcn_10813_sc483.bch.json
+   ```
+
+4. **Komşuluk Raporu ve Wiki Güncelleme:**
+   ```bash
+   # Terminal üzerinde özet tabloları göster
+   python3 wcdma_neighbor_report.py
+   
+   # Obsidian Wiki sayfalarını ve komşu haritasını güncelle
+   python3 wcdma_wiki_helper.py --uarfcns 10813
+   ```
 
 ### Doğrulama Durumu
 * **Doğrulanan Hücre:** UARFCN 10813 (Turkcell Band 1) üzerinde uçtan uca doğrulandı. SIB19 LTE komşu frekansları (EARFCN 6400, 1651) ve SIB11 WCDMA komşuları (UARFCN 2997) bağımsız GSM SI2quater taramalarında da tespit edilerek çapraz doğrulandı.
@@ -226,5 +285,5 @@ Adımları tek tek kontrol etmek isterseniz:
 Bu proje GPLv3 lisansı altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına göz atabilirsiniz.
 
 #### ASN.1 Spesifikasyonları Lisans Muafiyeti
-`wcdma_rrc_asn1/` dizini altındaki ASN.1 tanım dosyaları 3GPP Teknik Spesifikasyonu TS 25.331'den (V17.1.0 / V16.1.0) türetilmiştir. Telif hakları 3GPP Organizasyon Ortaklarına (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC) aittir. Bu tanımlar yalnızca teknik birlikte çalışabilirlik sağlamak amacıyla projeye dahil edilmiş olup, projenin GPLv3 lisans **kapsamı dışındadır**.
+`wcdma_rrc_asn1/` dizini altındaki ASN.1 tanım dosyaları 3GPP Teknik Spesifikasyonu TS 25.331'den (V17.1.0 / V16.1.0) türetilmiştir. Telif hakları 3GPP Organizasyon Ortaklarına (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC) aittir. Bu tanımlar yalnızca teknik birlikte çalışabilirlik sağlamak amacıyla projeye dahil edilmiş olup, projenin GPLv3 lisans kapsamı dışındadır.
 
