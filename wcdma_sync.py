@@ -196,18 +196,24 @@ def perform_cell_search(iq_data, sample_rate=7.68e6, plot_diagnostics=False, plo
     # Upsample template to 2 samples/chip (nearest neighbor repeat)
     psc_template = np.repeat(C_psc, 2)
     
-    # Coarse frequency offset grid search: -10 kHz to +10 kHz with 2 kHz steps
-    freq_grid = np.arange(-10000, 11000, 2000)
+    # Coarse frequency offset grid search: -20 kHz to +20 kHz with 2 kHz steps
+    freq_grid = np.arange(-20000, 21000, 2000)
     best_peak = -1
     best_offset = 0
     best_freq = 0
     best_folded = None
     
+    # Limit data used for coarse sync to at most 150 slots (10 frames = 100 ms)
+    # to keep processing time fast regardless of recording duration.
+    max_sync_samples = min(len(iq_data), 150 * 5120)
+    iq_sync_part = iq_data[:max_sync_samples]
+    t_sync = np.arange(max_sync_samples) / sample_rate
+    
     t = np.arange(len(iq_data)) / sample_rate
     
     for f in freq_grid:
         # Rotate received IQ data (including 2.40 MHz Low-IF offset)
-        rotated_iq = iq_data * np.exp(-1j * 2 * np.pi * (2.4e6 + f) * t)
+        rotated_iq = iq_sync_part * np.exp(-1j * 2 * np.pi * (2.4e6 + f) * t_sync)
         
         # FFT matched filter cross-correlation
         c = scipy.signal.fftconvolve(rotated_iq, psc_template[::-1].conj(), mode='valid')
@@ -343,8 +349,15 @@ def perform_cell_search(iq_data, sample_rate=7.68e6, plot_diagnostics=False, plo
     frame_boundary = frame_boundary + best_fine_delay
     frame_iq = iq_rotated[frame_boundary : frame_boundary + 76800]
     
+    # Fine CFO estimation using CPICH phase rotation between consecutive symbols
+    phase_diffs = best_cpich_symbols[1:] * best_cpich_symbols[:-1].conj()
+    mean_phase_diff = np.angle(np.sum(phase_diffs))
+    fine_cfo_hz = mean_phase_diff * 15000.0 / (2 * np.pi)
+    total_cfo_hz = 2.4e6 + best_freq + fine_cfo_hz
+    
     print(f"  -> İnce zamanlama düzeltmesi: {best_fine_delay} sample (Çerçeve başlangıcı: {frame_boundary})")
     print(f"  -> Başarıyla çözülen Primary Scrambling Code: {resolved_sc}")
+    print(f"  -> İnce frekans düzeltmesi: {fine_cfo_hz:.1f} Hz (Toplam CFO: {total_cfo_hz:.1f} Hz)")
     
     # 4. CPICH RSCP and Ec/No Quality Calculations
     # RSCP = |S_m|^2 / (512^2 * 2) = |S_m|^2 / 524288.0
@@ -380,10 +393,12 @@ def perform_cell_search(iq_data, sample_rate=7.68e6, plot_diagnostics=False, plo
         plt.grid(True, linestyle=':', alpha=0.6)
         plt.legend()
         
-        # Right Panel: CPICH QPSK Constellation
+        # Right Panel: CPICH QPSK Constellation (De-rotated)
         plt.subplot(1, 2, 2)
-        mean_amp = np.mean(np.abs(best_cpich_symbols))
-        normalized_symbols = best_cpich_symbols / (mean_amp + 1e-12)
+        t_symbols = np.arange(len(best_cpich_symbols)) / 15000.0
+        best_cpich_symbols_derotated = best_cpich_symbols * np.exp(-1j * 2 * np.pi * fine_cfo_hz * t_symbols)
+        mean_amp = np.mean(np.abs(best_cpich_symbols_derotated))
+        normalized_symbols = best_cpich_symbols_derotated / (mean_amp + 1e-12)
         
         plt.scatter(normalized_symbols.real, normalized_symbols.imag, color='#34c759', alpha=0.6, edgecolors='none', label='CPICH Sembolleri')
         plt.axhline(0, color='grey', linestyle='--', linewidth=0.8)
@@ -408,7 +423,7 @@ def perform_cell_search(iq_data, sample_rate=7.68e6, plot_diagnostics=False, plo
         "frame_timing_sample": int(frame_boundary),
         "cpich_rscp_dbm": float(round(rscp_dbm, 2)),
         "cpich_ecno_db": float(round(ecno_db, 2)),
-        "frequency_correction_hz": float(2.4e6 + best_freq)
+        "frequency_correction_hz": float(total_cfo_hz)
     }
 
 def perform_multi_cell_search(iq_data, sample_rate=7.68e6, max_cells=4):
@@ -421,17 +436,23 @@ def perform_multi_cell_search(iq_data, sample_rate=7.68e6, max_cells=4):
     C_psc = generate_psc()
     psc_template = np.repeat(C_psc, 2)
     
-    # Coarse frequency offset grid search: -10 kHz to +10 kHz with 2 kHz steps
-    freq_grid = np.arange(-10000, 11000, 2000)
+    # Coarse frequency offset grid search: -20 kHz to +20 kHz with 2 kHz steps
+    freq_grid = np.arange(-20000, 21000, 2000)
     best_peak = -1
     best_offset = 0
     best_freq = 0
     best_folded = None
     
+    # Limit data used for coarse sync to at most 150 slots (10 frames = 100 ms)
+    # to keep processing time fast regardless of recording duration.
+    max_sync_samples = min(len(iq_data), 150 * 5120)
+    iq_sync_part = iq_data[:max_sync_samples]
+    t_sync = np.arange(max_sync_samples) / sample_rate
+    
     t = np.arange(len(iq_data)) / sample_rate
     
     for f in freq_grid:
-        rotated_iq = iq_data * np.exp(-1j * 2 * np.pi * (2.4e6 + f) * t)
+        rotated_iq = iq_sync_part * np.exp(-1j * 2 * np.pi * (2.4e6 + f) * t_sync)
         c = scipy.signal.fftconvolve(rotated_iq, psc_template[::-1].conj(), mode='valid')
         
         n_slots = len(c) // 5120
@@ -565,6 +586,12 @@ def perform_multi_cell_search(iq_data, sample_rate=7.68e6, max_cells=4):
             rscp_dbm = 10.0 * np.log10(rscp_linear + 1e-12) - 30.0
             ecno_db = 10.0 * np.log10(ecno_linear + 1e-12)
             
+            # Fine CFO estimation using CPICH phase rotation between consecutive symbols
+            phase_diffs = best_cpich_symbols[1:] * best_cpich_symbols[:-1].conj()
+            mean_phase_diff = np.angle(np.sum(phase_diffs))
+            fine_cfo_hz = mean_phase_diff * 15000.0 / (2 * np.pi)
+            cell_cfo_hz = 2.4e6 + best_freq + fine_cfo_hz
+            
             # If CPICH Ec/No is above a reasonable threshold, accept it
             # We use -22.0 dB as a standard search threshold
             if ecno_db > -22.0:
@@ -576,7 +603,7 @@ def perform_multi_cell_search(iq_data, sample_rate=7.68e6, max_cells=4):
                         "frame_timing_sample": int(cell_frame_boundary),
                         "cpich_rscp_dbm": float(round(rscp_dbm, 2)),
                         "cpich_ecno_db": float(round(ecno_db, 2)),
-                        "frequency_correction_hz": float(2.4e6 + best_freq)
+                        "frequency_correction_hz": float(cell_cfo_hz)
                     }
                     
     sorted_cells = sorted(cells_found.values(), key=lambda x: x["cpich_ecno_db"], reverse=True)

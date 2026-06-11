@@ -45,6 +45,7 @@ def main():
     parser.add_argument("--samp-rate", type=float, default=7.68e6, help="Örnekleme hızı (Hz, varsayılan: 7.68e6)")
     parser.add_argument("--sdr", type=str, choices=["limesdr", "usrp", "auto"], default="auto", help="Kullanılacak SDR donanımı (varsayılan: auto)")
     parser.add_argument("--serial", type=str, help="SDR cihaz seri numarası (belirtilmezse otomatik seçilir)")
+    parser.add_argument("--antenna", type=str, default="auto", help="SDR RX Anten portu (örn: TX/RX, RX2, LNAH, LNAW veya auto)")
     parser.add_argument("--output", type=str, required=True, help="Çıktı .cfile yolu (örn: captures/uarfcn_2997.cfile)")
     
     args = parser.parse_args()
@@ -136,20 +137,30 @@ def main():
         print(f"SDR Sürücüsü (Driver): {driver_name}")
         
         antenna = ""
-        if driver_name.lower() == "lime":
-            if freq_mhz >= 1500.0:
-                antenna = "LNAH"
+        if args.antenna and args.antenna.lower() != "auto":
+            # Use user-specified antenna
+            if args.antenna in available_antennas:
+                antenna = args.antenna
             else:
-                antenna = "LNAW"
-        else:
-            # For USRP (uhd) or other devices, check for common ports
-            if "RX2" in available_antennas:
-                antenna = "RX2"
-            elif "TX/RX" in available_antennas:
-                antenna = "TX/RX"
-            elif available_antennas:
-                antenna = available_antennas[0]
+                print(f"Uyarı: Belirtilen anten '{args.antenna}' mevcut değil. Mevcut antenler: {available_antennas}")
+                # Fallback to auto-selection
+                args.antenna = "auto"
                 
+        if not antenna or args.antenna.lower() == "auto":
+            if driver_name.lower() == "lime":
+                if freq_mhz >= 1500.0:
+                    antenna = "LNAH"
+                else:
+                    antenna = "LNAW"
+            else:
+                # For USRP (uhd) or other devices, check for common ports
+                if "RX2" in available_antennas:
+                    antenna = "RX2"
+                elif "TX/RX" in available_antennas:
+                    antenna = "TX/RX"
+                elif available_antennas:
+                    antenna = available_antennas[0]
+                    
         if antenna:
             try:
                 sdr.setAntenna(SoapySDR.SOAPY_SDR_RX, channel, antenna)

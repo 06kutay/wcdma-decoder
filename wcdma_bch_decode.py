@@ -120,7 +120,9 @@ def decode_single_config(f0_raw, f1_raw, H0, H1, config):
         calc_crc = np.array([(reg >> (15 - i)) & 1 for i in range(16)], dtype=np.int8)
         
     if np.array_equal(rx_crc, calc_crc):
-        return True, block_bits[:246]
+        if np.all(data == 0) or np.all(data == 1):
+            return False, None
+        return True, data
         
     return False, None
 
@@ -171,6 +173,9 @@ def run_decode_grid_search(frame0_raw, frame1_raw, H0, H1):
                             
                             success, rx_crc, calc_crc, crc_config = verify_crc16(block_bits)
                             if success:
+                                data = block_bits[:246]
+                                if np.all(data == 0) or np.all(data == 1):
+                                    continue
                                 config_dict = {
                                     "conj_mode": conj_mode,
                                     "deint2": "deinterleave_2nd_a" if deint2_func == deinterleave_2nd_a else "deinterleave_2nd_b",
@@ -180,7 +185,7 @@ def run_decode_grid_search(frame0_raw, frame1_raw, H0, H1):
                                     "sign_q": sign_q,
                                     "crc_config": crc_config
                                 }
-                                return True, block_bits[:246], config_dict
+                                return True, data, config_dict
                                 
     return False, None, None
 

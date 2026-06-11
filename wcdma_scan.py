@@ -154,6 +154,7 @@ def main():
     parser.add_argument("--gain", type=float, default=40.0, help="SDR RX Kazancı (dB, varsayılan: 40)")
     parser.add_argument("--serial", type=str, help="SDR cihaz seri numarası")
     parser.add_argument("--sdr", type=str, choices=["limesdr", "usrp", "auto"], default="auto", help="Kullanılacak SDR donanımı (varsayılan: auto)")
+    parser.add_argument("--antenna", type=str, default="auto", help="SDR RX Anten portu (örn: TX/RX, RX2, LNAH, LNAW veya auto)")
     parser.add_argument("--no-wiki", action="store_true", help="Obsidian wiki güncellemelerini devre dışı bırak")
     parser.add_argument("--keep-captures", action="store_true", help="Tarama sonrasında ham .cfile dosyalarını silme")
     
@@ -229,6 +230,8 @@ def main():
             ]
             if args.serial:
                 capture_cmd.extend(["--serial", args.serial])
+            if args.antenna:
+                capture_cmd.extend(["--antenna", args.antenna])
                 
             # Run capture
             success = run_cmd(capture_cmd)
