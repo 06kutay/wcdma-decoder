@@ -152,7 +152,8 @@ def main():
     parser.add_argument("--input", type=str, help="Yeniden capture yapmadan taranacak ham IQ .cfile dosyası")
     parser.add_argument("--duration", type=float, default=3.0, help="SDR kayıt süresi (saniye, varsayılan: 3.0)")
     parser.add_argument("--gain", type=float, default=40.0, help="SDR RX Kazancı (dB, varsayılan: 40)")
-    parser.add_argument("--serial", type=str, help="LimeSDR Mini seri numarası")
+    parser.add_argument("--serial", type=str, help="SDR cihaz seri numarası")
+    parser.add_argument("--sdr", type=str, choices=["limesdr", "usrp", "auto"], default="auto", help="Kullanılacak SDR donanımı (varsayılan: auto)")
     parser.add_argument("--no-wiki", action="store_true", help="Obsidian wiki güncellemelerini devre dışı bırak")
     parser.add_argument("--keep-captures", action="store_true", help="Tarama sonrasında ham .cfile dosyalarını silme")
     
@@ -223,6 +224,7 @@ def main():
                 "--uarfcn", str(u),
                 "--duration", str(args.duration),
                 "--gain", str(args.gain),
+                "--sdr", args.sdr,
                 "--output", cfile_name
             ]
             if args.serial:

@@ -1,6 +1,6 @@
 ---
 title: Hot Cache
-updated: 2026-06-05 14:15
+updated: 2026-06-11 16:26
 ---
 
 # Hot Cache
@@ -31,4 +31,5 @@ updated: 2026-06-05 14:15
 
 | UARFCN | Frekans | PSC (Scrambling) | Kod Grubu | CPICH RSCP | CPICH Ec/No | Slot Timing | Kayıt Zamanı | SIB Dekodlama |
 |--------|---------|------------------|-----------|------------|-------------|-------------|--------------|---------------|
-| 2997 | 937.0 MHz | 5 | 0 | -53.07 dBm | -17.20 dB | 2795 | 2026-06-03T15:01:03Z | Yapılmadı |
+| 10813 | 2160.2 MHz | 483 | 60 | -39.70 dBm | -3.69 dB | 1013 | 2026-06-11T13:24:41Z | Yapılmadı |
+| 2997 | 937.0 MHz | 5 | 0 | -61.96 dBm | -11.82 dB | 5094 | 2026-06-05T12:33:01Z | Yapılmadı |

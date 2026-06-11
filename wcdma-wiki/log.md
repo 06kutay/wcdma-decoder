@@ -250,3 +250,53 @@ title: Wiki Log
 - **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
 - **Gerçekleşen Analizler:**
 - **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:10:34 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:22:46 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:23:59 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:25:47 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:27:56 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:29:13 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:30:49 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:32:33 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-05 15:34:53 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
+
+### 2026-06-11 16:26:16 - Faz 4: SIB11 ve SIB19 Komşu Hücre Dekodlama
+- **Dekodlama Kaynağı:** `captures/uarfcn_10813_long.cfile.bch.json` (3.0 saniyelik uzun capture).
+- **Gerçekleşen Analizler:**
+- **Durum:** Başarılı. Sıfır fallback prensibine uygun olarak havadan tüm komşuluk topolojisi çıkarıldı.
